@@ -7,10 +7,9 @@ import org.example.gatchbackend.dto.user.UserInsertDTO;
 import org.example.gatchbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -28,5 +27,13 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<UserGetDTO> create(@RequestBody UserInsertDTO dto){
         return ResponseEntity.ok(userService.create(dto));
+    }
+    @Operation(
+            summary = "List users.",
+            description = "List all users."
+    )
+    @GetMapping("/list")
+    public ResponseEntity<List<UserGetDTO>> list(){
+        return ResponseEntity.ok(userService.getUsers());
     }
 }
