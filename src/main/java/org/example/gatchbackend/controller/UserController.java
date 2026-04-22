@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
+import org.example.gatchbackend.exceptions.BadRequestException;
+import org.example.gatchbackend.exceptions.user.*;
+import org.example.gatchbackend.models.ErrorResponse;
 import org.example.gatchbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +29,7 @@ public class UserController {
 
     )
     @PostMapping("/create")
-    public ResponseEntity<UserGetDTO> create(@RequestBody UserInsertDTO dto){
+    public ResponseEntity<?> create(@RequestBody UserInsertDTO dto){
         return ResponseEntity.ok(userService.create(dto));
     }
     @Operation(
@@ -36,4 +40,38 @@ public class UserController {
     public ResponseEntity<List<UserGetDTO>> list(){
         return ResponseEntity.ok(userService.getUsers());
     }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBadRequest(BadRequestException ex){
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    }
+    @ExceptionHandler(value = EmailFormatException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEmailFormat(EmailFormatException ex){
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+    @ExceptionHandler(value = EmailExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleEmailExists(EmailExistsException ex) {
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+    @ExceptionHandler(value = UsernameFormatException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleUsernameFormat(UsernameFormatException ex){
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+    @ExceptionHandler(value = UsernameExistsException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleUsernameExists(UsernameExistsException ex){
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(value = PasswordFormatException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlePasswordFormat(PasswordFormatException ex){
+        return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
+    }
+
 }
+

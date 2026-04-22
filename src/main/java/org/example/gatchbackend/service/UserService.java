@@ -2,9 +2,11 @@ package org.example.gatchbackend.service;
 
 import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
+import org.example.gatchbackend.exceptions.BadRequestException;
 import org.example.gatchbackend.mapper.user.UserMapper;
 import org.example.gatchbackend.models.User;
 import org.example.gatchbackend.repository.UserRepository;
+import org.example.gatchbackend.validate.user.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,9 +22,12 @@ public class UserService {
     private UserMapper userMapper;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private UserValidate userValidate;
 
-    public UserGetDTO create(UserInsertDTO user){
+    public UserGetDTO create(UserInsertDTO user) {
         User userSave = userMapper.DTOtoUser(user);
+        userValidate.validations(userSave);
         userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
         userRepository.save(userSave);
         return userMapper.UserToGetDTO(userSave);
