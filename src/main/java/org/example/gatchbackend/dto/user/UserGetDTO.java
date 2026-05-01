@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class UserGetDTO {
     private String username;
     private String email;
+    private boolean status;
 }

@@ -6,6 +6,7 @@ import org.example.gatchbackend.exceptions.BadRequestException;
 import org.example.gatchbackend.mapper.user.UserMapper;
 import org.example.gatchbackend.models.User;
 import org.example.gatchbackend.repository.UserRepository;
+import org.example.gatchbackend.utils.SendMail;
 import org.example.gatchbackend.validate.user.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,16 +25,26 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserValidate userValidate;
+    @Autowired
+    private UserVerificationService userVerificationService;
+    @Autowired
+    private SendMail sendMail;
 
     public UserGetDTO create(UserInsertDTO user) {
         User userSave = userMapper.DTOtoUser(user);
         userValidate.validations(userSave);
         userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
         userRepository.save(userSave);
+        String token = userVerificationService.generateToken(user.getEmail());
+        sendMail.sendVerificationMail(user.getEmail(),"Activate your account",user.getUsername(), token);
+
         return userMapper.UserToGetDTO(userSave);
     }
     public List<UserGetDTO> getUsers(){
         List<User> users = userRepository.findAll();
         return users.stream().map(user -> userMapper.UserToGetDTO(user)).collect(Collectors.toList());
+    }
+    public UserGetDTO getUser(String mail){
+        return userMapper.UserToGetDTO(userRepository.findUserByEmail(mail));
     }
 }
