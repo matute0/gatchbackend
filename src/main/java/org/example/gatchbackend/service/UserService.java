@@ -2,6 +2,7 @@ package org.example.gatchbackend.service;
 
 import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
+import org.example.gatchbackend.enums.UserType;
 import org.example.gatchbackend.exceptions.BadRequestException;
 import org.example.gatchbackend.mapper.user.UserMapper;
 import org.example.gatchbackend.models.User;
@@ -34,6 +35,7 @@ public class UserService {
         User userSave = userMapper.DTOtoUser(user);
         userValidate.validations(userSave);
         userSave.setPassword(passwordEncoder.encode(userSave.getPassword()));
+        userSave.setUserType(UserType.USER);
         userRepository.save(userSave);
         String token = userVerificationService.generateToken(user.getEmail());
         sendMail.sendVerificationMail(user.getEmail(),"Activate your account",user.getUsername(), token);

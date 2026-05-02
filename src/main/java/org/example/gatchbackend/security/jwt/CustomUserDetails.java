@@ -10,13 +10,13 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final String email;
+    private final String username;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
 
     @Override
     public String getUsername(){
-        return email;
+        return username;
     }
     @Override
     public String getPassword(){

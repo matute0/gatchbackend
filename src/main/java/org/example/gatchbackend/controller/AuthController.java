@@ -1,5 +1,6 @@
 package org.example.gatchbackend.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.gatchbackend.dto.auth.AuthRequest;
 import org.example.gatchbackend.exceptions.auth.IncorrectPasswordException;
@@ -9,6 +10,7 @@ import org.example.gatchbackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +20,8 @@ public class AuthController {
     @Autowired
     private AuthService authService;
     @PostMapping("/login")
+    @SecurityRequirement(name="bearerAuth")
+    @PreAuthorize("isAnonymous()")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest){
         return ResponseEntity.ok(authService.createAuthenticationToken(authRequest));
     }

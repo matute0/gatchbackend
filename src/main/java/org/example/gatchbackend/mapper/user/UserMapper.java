@@ -24,6 +24,8 @@ public class UserMapper {
         return UserGetDTO.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
+                .userType(user.getUserType())
+                .status(user.isStatus())
                 .build();
     }
     public User DTOGetToUser(UserGetDTO dto){

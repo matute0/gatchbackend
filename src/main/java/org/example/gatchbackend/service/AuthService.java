@@ -27,14 +27,14 @@ public class AuthService {
     private HashBCrypt hashBCrypt;
 
     public String createAuthenticationToken(AuthRequest authRequest){
-        User user = userRepository.findUserByEmail(authRequest.getEmail());
+        User user = userRepository.findUserByUsername(authRequest.getUsername());
         if(!hashBCrypt.passwordEncoder().matches(authRequest.getPassword(), user.getPassword())){
             throw new IncorrectPasswordException();
         }
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
         );
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
-        return jwtTokenUtil.generateToken(authRequest.getEmail(), userDetails);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
+        return jwtTokenUtil.generateToken(authRequest.getUsername(), userDetails);
     }
 }

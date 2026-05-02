@@ -26,13 +26,13 @@ public class JwtTokenUtil {
         this.secretKey = Keys.hmacShaKeyFor(secretString.getBytes());
     }
 
-    public String generateToken(String email, UserDetails userDetails){
+    public String generateToken(String username, UserDetails userDetails){
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() +(24 * 60 * 60) * 1000))
@@ -40,8 +40,8 @@ public class JwtTokenUtil {
                 .compact();
     }
     public Boolean validateToken(String token, UserDetails userDetails){
-        final String correo = extractUsername(token);
-        return (correo.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
