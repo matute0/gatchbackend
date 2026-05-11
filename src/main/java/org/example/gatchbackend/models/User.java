@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.gatchbackend.enums.UserType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -18,5 +19,6 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private UserType userType;
     private boolean status;
 }

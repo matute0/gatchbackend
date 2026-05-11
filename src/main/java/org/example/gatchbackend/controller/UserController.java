@@ -1,8 +1,8 @@
 package org.example.gatchbackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
 import org.example.gatchbackend.exceptions.BadRequestException;
 import org.example.gatchbackend.exceptions.user.*;
@@ -11,6 +11,7 @@ import org.example.gatchbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,7 +28,10 @@ public class UserController {
             description = "Register new user."
 
     )
+    @SecurityRequirement(name="bearerAuth")
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/create")
+
     public ResponseEntity<?> create(@RequestBody UserInsertDTO dto){
         return ResponseEntity.ok(userService.create(dto));
     }
@@ -35,6 +39,8 @@ public class UserController {
             summary = "List users.",
             description = "List all users."
     )
+    @SecurityRequirement(name="bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<?> list(){
         return ResponseEntity.ok(userService.getUsers());
