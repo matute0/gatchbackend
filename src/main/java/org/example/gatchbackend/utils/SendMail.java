@@ -42,4 +42,25 @@ public class SendMail {
             System.err.println("Error al enviar el correo: " + e.getMessage());
         }
     }
+    public void sendPasswordCode(String destination, String title, String username, String code){
+        MimeMessage message = mailSender.createMimeMessage();
+        try{
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(destination);
+            helper.setSubject(title);
+            helper.setFrom("gatchdevelopment@gmail.com");
+
+            Context context = new Context();
+            context.setVariable("username", username);
+            context. setVariable("code", code);
+
+            String html = templateEngine.process("passwordcode", context);
+
+            helper.setText(html, true);
+
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 }
