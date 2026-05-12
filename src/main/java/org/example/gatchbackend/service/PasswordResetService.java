@@ -10,6 +10,7 @@ import org.example.gatchbackend.mapper.user.UserMapper;
 import org.example.gatchbackend.models.PasswordReset;
 import org.example.gatchbackend.models.User;
 import org.example.gatchbackend.repository.PasswordResetRepository;
+import org.example.gatchbackend.repository.UserRepository;
 import org.example.gatchbackend.utils.SendMail;
 import org.example.gatchbackend.validate.passwordreset.PasswordResetValidate;
 import org.example.gatchbackend.validate.user.UserValidate;
@@ -38,6 +39,8 @@ public class PasswordResetService {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     public String generateToken(String email){
         PasswordReset passwordReset = PasswordReset.builder()
@@ -72,6 +75,8 @@ public class PasswordResetService {
         userValidate.passwordIsValid(dto.getPassword());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         passwordReset.setStatus(false);
+        userRepository.save(user);
+        passwordResetRepository.save(passwordReset);
         return "Password changed.";
     }
 }
