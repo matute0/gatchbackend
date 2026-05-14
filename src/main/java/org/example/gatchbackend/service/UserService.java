@@ -3,7 +3,6 @@ package org.example.gatchbackend.service;
 import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
 import org.example.gatchbackend.enums.UserType;
-import org.example.gatchbackend.exceptions.BadRequestException;
 import org.example.gatchbackend.mapper.user.UserMapper;
 import org.example.gatchbackend.models.User;
 import org.example.gatchbackend.repository.UserRepository;
@@ -12,8 +11,12 @@ import org.example.gatchbackend.validate.user.UserValidate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,8 +41,11 @@ public class UserService {
         userSave.setUserType(UserType.USER);
         userRepository.save(userSave);
         String token = userVerificationService.generateToken(user.getEmail());
-        sendMail.sendVerificationMail(user.getEmail(),"Activate your account",user.getUsername(), token);
-
+        Map<String, Object> variablesMap = Map.of(
+                "token",token,
+                "username", user.getUsername()
+        );
+        sendMail.sendMail(user.getEmail(), "Activate your account", "mail", variablesMap);
         return userMapper.UserToGetDTO(userSave);
     }
     public List<UserGetDTO> getUsers(){
