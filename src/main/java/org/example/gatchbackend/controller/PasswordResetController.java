@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/password")
-@Tag(name = "Password Reset", description = "Gen a reset code and change your password")
+@Tag(name = "Password Reset", description = "Generate a reset code to change your password")
 public class PasswordResetController {
     @Autowired
     private PasswordResetService passwordResetService;
@@ -31,7 +31,7 @@ public class PasswordResetController {
     @PatchMapping("/reset")
     @SecurityRequirement(name="bearerAuth")
     @PreAuthorize("isAnonymous()")
-    public ResponseEntity<?> resetPassword(PasswordResetRequestDTO dto){
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDTO dto){
         return ResponseEntity.ok(passwordResetService.changePassword(dto));
     }
 
