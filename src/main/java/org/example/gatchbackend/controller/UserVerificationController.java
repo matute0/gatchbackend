@@ -32,7 +32,7 @@ public class UserVerificationController {
             description = "With the email and code, activate your user"
     )
     @PatchMapping("/activate")
-    public ResponseEntity<?> activateUser(String token, String email){
+    public ResponseEntity<?> activateUser(@RequestParam String token, @RequestParam String email){
         userVerificationService.activateUser(token, email);
         return ResponseEntity.ok("Activated");
     }
