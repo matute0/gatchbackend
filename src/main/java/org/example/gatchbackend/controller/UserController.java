@@ -77,6 +77,10 @@ public class UserController {
     public ErrorResponse handlePasswordFormat(PasswordFormatException ex){
         return new ErrorResponse(HttpStatus.CONFLICT.value(), ex.getMessage());
     }
-
+    @ExceptionHandler(value = UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFound(UserNotFoundException ex){
+        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
 }
 

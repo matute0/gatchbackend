@@ -2,6 +2,7 @@ package org.example.gatchbackend.mapper.user;
 
 import org.example.gatchbackend.dto.user.UserGetDTO;
 import org.example.gatchbackend.dto.user.UserInsertDTO;
+import org.example.gatchbackend.exceptions.user.UserNotFoundException;
 import org.example.gatchbackend.models.User;
 import org.example.gatchbackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class UserMapper {
                 .build();
     }
     public UserGetDTO UserToGetDTO(User user){
+        if(user == null){
+            throw new UserNotFoundException();
+        }
         return UserGetDTO.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
