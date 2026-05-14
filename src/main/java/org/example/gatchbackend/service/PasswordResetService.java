@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -58,7 +59,11 @@ public class PasswordResetService {
             throw new UserNotFoundException();
         }
         String code = generateToken(email);
-        sendMail.sendPasswordCode(email, "Change your password", user.getUsername(), code);
+        Map<String, Object> variablesMap = Map.of(
+                "username", user.getUsername(),
+                "code", code
+        );
+        sendMail.sendMail(email, "Change your password","passwordcode", variablesMap);
         return "Check your email.";
     }
     public String changePassword(PasswordResetRequestDTO dto) {
