@@ -1,5 +1,6 @@
 package org.example.gatchbackend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,6 +23,10 @@ public class AuthController {
     @PostMapping("/login")
     @SecurityRequirement(name="bearerAuth")
     @PreAuthorize("isAnonymous()")
+    @Operation(
+            summary = "Log in on the system",
+            description = "Generate a jwt token to sign in"
+    )
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest){
         return ResponseEntity.ok(authService.createAuthenticationToken(authRequest));
     }
@@ -29,6 +34,10 @@ public class AuthController {
     @PatchMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "Log out of the system",
+            description = "Revokes the provided JWT and adds it to the blocklist."
+    )
     public ResponseEntity<?> logout(HttpServletRequest req){
         return ResponseEntity.ok(authService.logout(req));
     }
