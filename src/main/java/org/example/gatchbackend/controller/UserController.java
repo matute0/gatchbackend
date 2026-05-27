@@ -40,7 +40,7 @@ public class UserController {
             description = "List all users."
     )
     @SecurityRequirement(name="bearerAuth")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/list")
     public ResponseEntity<?> list(){
         return ResponseEntity.ok(userService.getUsers());
